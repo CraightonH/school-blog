@@ -18,16 +18,24 @@
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
-  </head>
+    <style>
+        .nav-container {
+            width: 100%;
+        }
+    </style>
+</head>
   <body>
     <header class="page-header" role="banner">
-      <h1 class="project-name">{{ default: site.title | default: site.github.repository_name }}</h1>
-      <h2 class="project-tagline">{{ default: site.description | default: site.github.project_tagline }}</h2>
-      {% if site.show_downloads %}
-        <a href="{{ site.github.zip_url }}" class="btn">Download .zip</a>
-        <a href="{{ site.github.tar_url }}" class="btn">Download .tar.gz</a>
-      {% endif %}
+        <h1 class="project-name">{{ default: site.title | default: site.github.repository_name }}</h1>
+        <h2 class="project-tagline">{{ default: site.description | default: site.github.project_tagline }}</h2>
+        {% if site.show_downloads %}
+            <a href="{{ site.github.zip_url }}" class="btn">Download .zip</a>
+            <a href="{{ site.github.tar_url }}" class="btn">Download .tar.gz</a>
+        {% endif %}
     </header>
+    <div class="nav-container">
+        
+    </div>
 
     <main id="content" class="main-content" role="main">
       {{ content }}
