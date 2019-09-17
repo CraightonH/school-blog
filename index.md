@@ -1,6 +1,8 @@
 # Raspberry Pi Stoplight
 This project involved creating a webserver on a raspberry pi to control an LED stoplight via the pi's GPIO pins.
 
+This tutorial is not intended to be a codebase for the project, but a high-level overview of its requirements.  Code is presented in places to help get the project started.  For the complete codebase of my project, visit my [GitHub repo](https://github.com/CraightonH/pi-automation)
+
 ## Objectives
 * Learn to enumerate requirements from use cases and user stories
 * Learn to utilize the general purpose input/output (GPIO) pins on the Raspberry Pi to control LEDs
@@ -62,3 +64,14 @@ As seen above, each state has 4 possible ways to be entered - whenever the `/sto
 ### Design the Circuit
 Wire the raspberry pi GPIO pins to 3 LEDs according to the diagram below.  Note that this diagram shows individual LEDs with resistors included in the circuit.  My LEDs came as a PCB in the shape of a stoplight with resistors included on the board.
 ![Breadboard Wiring](https://github.com/CraightonH/school-blog/blob/master/LEDStoplight.png?raw=true)
+After the wires are connected, and the web server is running with the ability to modify the GPIO pin signals, the lights should light up according to the logic presented in the state diagram.
+
+## Thought Questions
+1. What language did you choose for implementing this project? Why?
+I chose Python because it's a simple language with a lot of cross platform capability.  One of the main reasons is I can easily abstract the webserver from the GPIO portion of the project and run the server on some other computer, be it Linux or Windows, so that the server doesn't live or die with the pi being turned on or not.  Then the pi can contact the external web service to determine how it should manipulate the lights.
+2. What is the purpose of the resistor in this simple circuit? What would happen if you omitted it?
+The resistor reduces the current in the circuit to protect the LED.  If it were not there, the LED would burn out much faster.
+3. What are practical applications of this device? What enhancements or modifications would you make?
+This isn't a very practical device - I'm not going to keep a pi hooked up to an LED stoplight for fun.  However, the project gives introductory experience into working with GPIO pins on the pi and connecting the physical with the virtual.  An enhancement I made was creating a separate, non-web interface for the pi.  I have a 7" touch screen for the pi and I made a full screen GUI that interfaces with the webserver to change the lights.  The code can be found [here](https://github.com/CraightonH/pi-gui).
+4. Please estimate the total time you spent on this lab and report.
+Coding and wiring took me about 3-4 hours (not counting the GUI I worked on).  This report took me about 2 hours.
