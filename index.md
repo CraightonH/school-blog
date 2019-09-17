@@ -60,5 +60,5 @@ The stoplight is very simple and can be modeled by the following state diagram:
 As seen above, each state has 4 possible ways to be entered - whenever the `/stoplight/[color|off]` command is called from any state.  Each state has 4 possible states it can transition to - every state by calling `/stoplight/[color|off]`. 
 
 ### Design the Circuit
-Wire the raspberry pi GPIO pins to 3 LEDs according to the below diagram.  Note that this diagram shows individual LEDs with resistors included in the circuit.  My LEDs came as a PCB in the shape of a stoplight with resistors included on the board.
-![Breadboard Wiring](https://github.com/CraightonH/school-blog/blob/master/LEDStoplight.png)
+Wire the raspberry pi GPIO pins to 3 LEDs according to the diagram below.  Note that this diagram shows individual LEDs with resistors included in the circuit.  My LEDs came as a PCB in the shape of a stoplight with resistors included on the board.
+![Breadboard Wiring](https://github.com/CraightonH/school-blog/blob/master/LEDStoplight.png?raw=true)
