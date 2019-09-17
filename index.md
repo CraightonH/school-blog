@@ -32,29 +32,33 @@ sudo apt install python3 python3-pip
 sudo pip3 install Flask requests RPi.GPIO
 ```
 **NOTE:** All of the above packages should come preinstalled with a current version of Raspbian.
-2. Get started with a very basic web server:
-`server.py`
+2. Get started with a very basic web server by creating a file named `server.py`:
 ```
 from flask import Flask
 app = Flask(__name__)
-
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
 ```
+
 3. Run the server:
+
 ```
 python3 server.py
 ```
+
 4. (Optional) Set server to run on port `80`.  By default the server will run on port `5000`.  Add the following to `server.py`:
 ```
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=80, debug=True)
 ```
+
 This requires that the server be run as root:
+
 ```
 sudo python3 server.py
 ```
+
 ### Implement Stoplight Logic
 The stoplight is very simple and can be modeled by the following state diagram:
 ![Stoplight State Diagram](https://www.lucidchart.com/publicSegments/view/034941ad-58dc-4ddf-9982-6051a4b32b6f/image.png)
