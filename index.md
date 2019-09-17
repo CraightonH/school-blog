@@ -33,7 +33,7 @@ sudo pip3 install Flask requests RPi.GPIO
 ```
 **NOTE:** All of the above packages should come preinstalled with a current version of Raspbian.
 2. Get started with a very basic web server:
-server.py
+`server.py`
 ```
 from flask import Flask
 app = Flask(__name__)
@@ -51,7 +51,7 @@ python3 server.py
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=80, debug=True)
 ```
-This requires that the server be run as sudo:
+This requires that the server be run as root:
 ```
 sudo python3 server.py
 ```
