@@ -57,7 +57,7 @@ sudo python3 server.py
 ### Implement Stoplight Logic
 The stoplight is very simple and can be modeled by the following state diagram:
 ![Stoplight State Diagram](https://www.lucidchart.com/publicSegments/view/034941ad-58dc-4ddf-9982-6051a4b32b6f/image.png)
-As seen above, each state has 4 possible ways to be entered - whenever the `/stoplight/[color|off]` command is called from any state.  Each state has 4 possible states it can transition to - every state by calling `/stoplight/[color|off]`. 
+As seen above, each state has 4 possible ways to be entered - whenever the `/stoplight/[color|off]` command is called from any state, where `color` is one of `red`, `yellow`, `green`.  Each state has 4 possible states it can transition to - every state by calling `/stoplight/[color|off]`. 
 
 ### Design the Circuit
 Wire the raspberry pi GPIO pins to 3 LEDs according to the diagram below.  Note that this diagram shows individual LEDs with resistors included in the circuit.  My LEDs came as a PCB in the shape of a stoplight with resistors included on the board.
