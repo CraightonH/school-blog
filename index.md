@@ -18,6 +18,7 @@ The materials used in this lab were:
 * LucidChart
 
 ## References
+The following were useful resources in the development of this project:
 * [Flask Documentation](http://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application) - This site helps get you started with a python web server.
 * [Python Threading Documentation](https://docs.python.org/3/library/threading.html) - This site documents python's threading library which is useful if your code has a blocking operation (loop).
 * [Python GPIO Documentation](https://www.raspberrypi.org/documentation/usage/gpio/python/README.md) - This site documents several common use cases for simple GPIO projects such as wiring up LEDs.
