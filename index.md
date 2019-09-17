@@ -18,6 +18,7 @@ The materials used in this lab were:
 * 1x LED stoplight
 * 1x breadboard
 * LucidChart (for state diagram)
+* Fritzing (for breadboard diagram)
 
 ## References
 The following were useful resources in the development of this project:
@@ -81,4 +82,13 @@ After the wires are connected, and the web server is running with the ability to
 3. **What are practical applications of this device? What enhancements or modifications would you make?**
     This isn't a very practical device - I'm not going to keep a pi hooked up to an LED stoplight for fun.  However, the project gives introductory experience into working with GPIO pins on the pi and connecting the physical with the virtual.  An enhancement I made was creating a separate, non-web interface for the pi.  I have a 7" touch screen for the pi and I made a full screen GUI that interfaces with the webserver to change the lights.  The code can be found [here](https://github.com/CraightonH/pi-gui).
 4. **Please estimate the total time you spent on this lab and report.**
-    Coding and wiring took me about 3-4 hours (not counting the GUI I worked on).  This report took me about 2 hours.
+    Coding and wiring took me about 3-4 hours (not counting the GUI I worked on).  This report took me about 5 hours.
+
+## Certification of Work
+I certify that the solution presented in this lab represents my own work.
+
+Craighton Hancock
+
+## Appendix
+### Appendix A - Code
+All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/pi-automation).
