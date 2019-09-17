@@ -57,4 +57,4 @@ sudo python3 server.py
 ```
 ### Implement Stoplight Logic
 The stoplight is very simple and can be modeled by the following state diagram:
-[Stoplight State Diagram](https://www.lucidchart.com/publicSegments/view/034941ad-58dc-4ddf-9982-6051a4b32b6f/image.png)
+![Stoplight State Diagram](https://www.lucidchart.com/publicSegments/view/034941ad-58dc-4ddf-9982-6051a4b32b6f/image.png)
