@@ -61,4 +61,4 @@ As seen above, each state has 4 possible ways to be entered - whenever the `/sto
 
 ### Design the Circuit
 Wire the raspberry pi GPIO pins to 3 LEDs according to the below diagram.  Note that this diagram shows individual LEDs with resistors included in the circuit.  My LEDs came as a PCB in the shape of a stoplight with resistors included on the board.
-![Breadboard Wiring](https://www.lucidchart.com/publicSegments/view/034941ad-58dc-4ddf-9982-6051a4b32b6f/image.png)
+![Breadboard Wiring](https://github.com/CraightonH/school-blog/blob/master/LEDStoplight.png)
