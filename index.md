@@ -40,21 +40,16 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello, World!'
 ```
-
 3. Run the server:
-
 ```
 python3 server.py
 ```
-
 4. (Optional) Set server to run on port `80`.  By default the server will run on port `5000`.  Add the following to `server.py`:
 ```
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=80, debug=True)
 ```
-
 This requires that the server be run as root:
-
 ```
 sudo python3 server.py
 ```
