@@ -24,6 +24,12 @@ The following were useful resources in the development of this project:
 * [Python GPIO Documentation](https://www.raspberrypi.org/documentation/usage/gpio/python/README.md) - This site documents several common use cases for simple GPIO projects such as wiring up LEDs.
 
 ## Procedures
-
 ### Python Web Server
-
+Follow the procedures to create a web server in python:
+1. Ensure python is installed with necessary prerequisites by opening a terminal and typing the following:
+```
+sudo apt install python3 python3-pip
+sudo pip3 install Flask requests RPi.GPIO
+```
+**NOTE:** All of the above packages should come preinstalled with a current version of Raspbian.
+2. 
