@@ -24,7 +24,7 @@ The following were useful resources in the development of this project:
 * [Python GPIO Documentation](https://www.raspberrypi.org/documentation/usage/gpio/python/README.md) - This site documents several common use cases for simple GPIO projects such as wiring up LEDs.
 
 ## Procedures
-### Python Web Server
+### Setup Python Web Server
 Follow the procedures to create a web server in python:
 1. Ensure python is installed with necessary prerequisites by opening a terminal and typing the following:
 ```
@@ -32,4 +32,28 @@ sudo apt install python3 python3-pip
 sudo pip3 install Flask requests RPi.GPIO
 ```
 **NOTE:** All of the above packages should come preinstalled with a current version of Raspbian.
-2. 
+2. Get started with a very basic web server:
+server.py
+```
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+```
+3. Run the server:
+```
+python3 server.py
+```
+4. (Optional) Set server to run on port `80`.  By default the server will run on port `5000`.  Add the following to `server.py`:
+```
+if __name__ == "__main__":
+  app.run(host="0.0.0.0", port=80, debug=True)
+```
+This requires that the server be run as sudo:
+```
+sudo python3 server.py
+```
+### Implement Stoplight Logic
+The stoplight is very simple and can be modeled 
