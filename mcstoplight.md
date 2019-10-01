@@ -1,7 +1,7 @@
 # Wemos D1 Mini Stoplight
 This project involved creating a webserver on a Wemos D1 Mini to control an LED stoplight.
 
-This tutorial is not intended to be a codebase for the project, but a high-level overview of its requirements.  Code is presented in places to help get the project started.  For the complete codebase of my project, visit my [GitHub repo](https://github.com/CraightonH/wemos-stoplight)
+This tutorial is not intended to be a codebase for the project, but a high-level overview of its requirements.  For the complete codebase of my project, visit my [GitHub repo](https://github.com/CraightonH/wemos-stoplight)
 
 ## Objectives
 * Reinforce enumerating requirements from use cases and user stories 
