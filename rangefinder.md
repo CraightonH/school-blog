@@ -28,7 +28,7 @@ Arduino has an IDE for development with their chipsets.  The following steps doc
 2. Assuming Windows OS, open Device Manager and expand Serial, then right click on the item and select Update Driver.  After installation the item’s name should change to CH340 USB to serial controller
 3. Add the Wemos D1 mini’s library to the Arduino IDE.  Select File > Preferences and enter `http://arduino.esp8266.com/stable/package_esp8266com_index.json` into the Additional Boards Manager URLs field.
 4. Add the “LOLIN Wemos D1 R2 & mini” board to your project.  Click on Tools > Board and find the aforementioned board.
-5. Add the ArduinoHttpClient library.  Click on Tools > Manage Libraries > Search for "ArduinoHttpClient" and click install.
+5. Add the ArduinoHttpClient library.  Click on Tools > Manage Libraries > Search for `ArduinoHttpClient` and click install.
 
 ### Implement Range Finding Logic
 #### Calculating Distance
@@ -56,7 +56,7 @@ C: Calculated speed of sound
 S: 331.4
 T: 20
 H: 50
-C = 331.4 + (.606*20) + (.0124*50) = 344.02 m/s
+C = 331.4 + (.606*20) + (.0124*50) = 344.02 m/s ~ 344 m/s
 ```
 
 #### Range Finding
@@ -68,22 +68,35 @@ T: time
 D = S(T/2)
 ```
 
+#### Flashing the Light
+If you read through the stoplight tutorial, you'd probably notice that there isn't a flash endpoint.  After thinking through the issue, I decided not to change the code for that project - the stoplight simply provides an API to turn lights on and off.  The client is in charge of implementing additional logic.  Therefore, the sensor will decide when and how to flash the light.  Here's a snippet of code since the code describes the process better than words:
+```
+if (distance <= 10) {
+    if (FLASH_RED) {
+      FLASH_RED = false;
+      makeRequest("red");
+    } else {
+      FLASH_RED = true;
+      makeRequest("off");
+    }
+  }
+```
+By simply maintaining a variable of the what the next operation should be, we can tell the stoplight to flash or not.
+
 ### Design the Circuit
 Assuming the Wemos D1 has male headers soldered into its pin slots, plug it into the breadboard.  Then use wires to connect the micro controller to the ultrasonic speaker as depicted in the following diagram:
+
 ![Breadboard Wiring](https://github.com/CraightonH/school-blog/blob/master/RangeFinderDiagram.png?raw=true)
 
 ## Thought Questions
-1.	**What are some key differences between developing this lab on a Raspberry Pi, and developing on Arduino?**
-The biggest difference is with Arduino, you’re locked into a specific language – C – while with the Pi, you can choose pretty much any language you want.  Additionally, because the Pi has an OS on it, you can start and stop your program at will, while with the Arduino you plug it in and it loops through your program until it no longer receives power.  
-2.	**What are the strengths and trade-offs of each of these platforms?** 
-The strength of the Pi is it’s versatility in implementing the software – if a language can run on an ARM processor, you can use it and implement your project in a familiar-to-you fashion.  Tradeoffs of the Pi are its size and cost.  At about $40, it’s an expensive wifi-enabler and it would be clunky to place near the item you want wifi enabled in some cases.  
-The microcontroller excels in size and cost.  It’s extremely cheap and easy to attach to a device to make it wifi-enabled.  The big downside is you must program the microcontroller in C and implementing the code isn’t as familiar a process since the code doesn’t run on top of an OS.
-3.	**How familiar were you with the Arduino platform prior to this lab?** 
-I had never written code for an Arduino before this lab.  It was fun and not as difficult as I first expected thanks to all the libraries available for it.
-4.	**What was the biggest challenge you overcame in this lab?**
-The hardest part of the lab was implementing the timer for the cycle function.  In the raspberry pi I implemented a while loop in a background thread, but you don’t get multiple threads on this platform.  So it took awhile for me to wrap my mind around making my own timer with the D1’s built-in clock while not blocking the only thread available to the program.
+1.	**Think of the interaction between your devices. How well would this scale to multiple devices? Is it easy to add another sensor? Another actuator?**
+This would not scale well at all.  While this project didn't include an API for the range finder, I would likely build one if I were to set this up at home.  The API could then allow remote control of the different distances without having to reflash the device.  Adding a 3rd device, with it's own API, could mean that all other devices need to be updated to see it's API to allow for interaction with it.  It is not practical to maintain an API for each device and update each device when another is added to the system.
+2.	**What are strengths and weaknesses of the tennis-ball-on-a-string system that Don had originally? What are strengths and weaknesses of the IoT system that he developed? What enhancements would you suggest?** 
+The strength of the tennis ball is that it's 1) cheap, 2) effective, and 3) requires very little to no maintenance.  The strength of the IoT system is that it's 1) cheap, 2) effective, and 3) easily configurable (assuming an API that allows for changing distance configurations).  It's weakness is that if Don invents a new interaction with this existing system, he has to update all devices to account for this new interaction.  Additionally, these cheap IoT devices are more likely to break than a tennis ball which makes this parking system fragile - only one of the 4 devices needs to break and you no longer have a parking system.  
+3.	**What was the biggest challenge you overcame in this lab?**
+I had 1 major challenge during the lab which was my microcontroller kept throwing errors and failing.  At first I suspected my code was written poorly, but after about 2 hours, I determined that it was insufficient power to the microcontroller.  Sure enough, once I plugged the microcontroller into a wall outlet instead of a USB port on my computer, everything worked like a charm.
 5.	**Please estimate the total time you spent on this lab and report.**
-Coding and wiring took me about 3-4 hours. This report took me about 1.5 hours.
+Coding and wiring took me about 4-5 hours. This report took me about 1.5 hours.
 
 ## Certification of Work
 I certify that the solution presented in this lab represents my own work.
@@ -92,4 +105,4 @@ Craighton Hancock
 
 ## Appendix
 ### Appendix A - Code
-All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-stoplight).
+All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-range-finder).
