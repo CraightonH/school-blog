@@ -71,6 +71,7 @@ Now you can use the `client` object to interact with the MQTT server.
 Now that we're using the MQTT server to drive our devices instead of web servers, we need to put logic into the stoplight so it can choose which light turns on and when.  Our logic operates as follows:
 1. Only update the light if the garage door is open, otherwise turn the light off.
 2. Change the light color based on the same criteria as the previous projects.
+
 With those criteria, our main logic can be broken down into the following function:
 ```
 void handleDistance(int distance) {
