@@ -68,6 +68,9 @@ PubSubClient client([IP of mosquitto server], 1883, wifiClient);
 Now you can use the `client` object to interact with the MQTT server.
 
 ### Implement Stoplight Logic
+The following is a state diagram of the logic that needs to be performed:
+![State Diagram](https://www.lucidchart.com/publicSegments/view/d6d9ff62-378e-42ae-a006-b06407a8869c/image.png)
+
 Now that we're using the MQTT server to drive our devices instead of web servers, we need to put logic into the stoplight so it can choose which light turns on and when.  Our logic operates as follows:
 1. Only update the light if the garage door is open, otherwise turn the light off.
 2. Change the light color based on the same criteria as the previous projects.
