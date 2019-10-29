@@ -257,5 +257,5 @@ Craighton Hancock
 All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-mqtt-stoplight).
 ### Appendix B - Range Finder Code
 All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-mqtt-range-finder).
-### Appendix B - Door Sensor Code
+### Appendix C - Door Sensor Code
 All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-mqtt-door-sensor).
