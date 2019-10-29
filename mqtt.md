@@ -225,6 +225,10 @@ Like the stoplight, this circuit doesn't change.  Refer to its documentation [he
 #### Door Sensor
 This circuit is extremely simple.  Wire it according to the following diagram:
 
+![Breadboard Wiring](https://github.com/CraightonH/school-blog/blob/master/MagneticSensorDiagram.png?raw=true)
+
+Note, the magnetic sensor is a simple device with two wires.  It doesn't matter which wire is put into ground or not.  The diagram may look confusing because there is no device and that's because I was unable to find the sensor in Fritzing.  Suffice it to say, you only need to put one of the wires in ground and one in another pin that can be read.
+
 
 ## Thought Questions
 1.	**How does the communication between devices change with the shift to using an event hub? How does this facilitate greater scalability? What things did you do to learn to use MQTT?**
