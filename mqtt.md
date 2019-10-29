@@ -51,59 +51,23 @@ This will print output in the `mosquitto_sub` terminal that looks like:
 ```
 This shows that the message `testing` was received in the `/test` topic.  MQTT is as simple as that!
 
-### Implement Range Finding Logic
-#### Calculating Distance
-Because we're building a range finder, we need to calculate the distance between our UltraSonic speaker and the object in front of it.  The formula for that calculation is:
+### Connect Arduino to MQTT Server
+#### Install PubSubClient Library
+Open the Arduino IDE and do the following:
+1. Click on Tools > Manage Libraries
+2. Search for "PubSubClient"
+3. Find `PubSubClient by Nick O'Leary` in the list and click Install
+4. In your sketch, include the following lines:
 ```
-D: distance
-S: speed
-T: time
-D = ST
+#include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+#include <PubSubClient.h>
+WiFiClient wifiClient;
+PubSubClient client([IP of mosquitto server], 1883, wifiClient);
 ```
-But what's the speed?  In our case, the speed we will use is the speed of sound through air since we want to calculate the distance the sound waves traveled.  
+Now you can use the `client` object to interact with the MQTT server.
 
-#### Calculating Speed of Sound
-As explained in the [UltraSonic Speaker tutorial](http://www.circuitbasics.com/how-to-set-up-an-ultrasonic-range-finder-on-an-arduino/), speed travels at a constant `331.4 m/s` at 0C and 0% humidity.  The formula to calculate the speed of sound is
-```
-C: Calculated speed of sound
-S: Constant speed of sound @ 0C and 0% humidity
-T: Temperature in Celsius
-H: % Humidity
-C = S + (.606T) + (.0124H)
-```
-Because this project doesn't include a temperature and humidity sensor, we'll just use reasonable numbers for each to estimate:
-```
-C: Calculated speed of sound
-S: 331.4
-T: 20
-H: 50
-C = 331.4 + (.606*20) + (.0124*50) = 344.02 m/s ~ 344 m/s
-```
-
-#### Range Finding
-Now our program needs to use the distance calculation to determine how far away an object is.  Remember, these audio waves are traveling away from the speaker AND then back.  But we only want the distance they traveled one way, otherwise we'll think the object is twice as far away as it actually is!  So our final calculation will be:
-```
-D: distance
-S: speed
-T: time
-D = S(T/2)
-```
-
-#### Flashing the Light
-If you read through the stoplight tutorial, you'd probably notice that there isn't a flash endpoint.  After thinking through the issue, I decided not to change the code for that project - the stoplight simply provides an API to turn lights on and off.  The client is in charge of implementing additional logic.  Therefore, the sensor will decide when and how to flash the light.  Here's a snippet of code since the code describes the process better than words:
-```
-if (distance <= 10) {
-    if (FLASH_RED) {
-      FLASH_RED = false;
-      makeRequest("red");
-    } else {
-      FLASH_RED = true;
-      makeRequest("off");
-    }
-  }
-```
-By simply maintaining a variable of the what the next operation should be, we can tell the stoplight to flash or not.
-
+#### 
 ### Design the Circuit
 Assuming the Wemos D1 has male headers soldered into its pin slots, plug it into the breadboard.  Then use wires to connect the micro controller to the ultrasonic speaker as depicted in the following diagram:
 
