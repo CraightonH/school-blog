@@ -182,6 +182,7 @@ Notice that we use a timer to prevent constantly publishing the data.  Every sec
 This is the simplest sensor of all to setup and it's the new addition to this project.  In a nutshell:
 1. Send the door state periodically.
 2. Send the door state when it changes.
+
 ```
 void pubDoorStatePeriodic(bool doorClosed) {
   if (millis() > timer + 5000) {
