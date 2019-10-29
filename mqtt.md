@@ -233,11 +233,15 @@ Note, the magnetic sensor is a simple device with two wires.  It doesn't matter 
 ## Thought Questions
 1.	**How does the communication between devices change with the shift to using an event hub? How does this facilitate greater scalability? What things did you do to learn to use MQTT?**
 
+Using an event hub greatly increases the scalability of this system because you don't have to create a web API on each device and code each device to know IP addresses of all other devices and the endpoints each device exposes.  Instead, all the devices can subscribe to topics on the event hub and any future device can interact with the actuator by simply sending data that the actuator would expect in that topic.  I got my feet wet with MQTT by installing it on my laptop and using the `mosquitto_pub` and `mosquitto_sub` utilities that are installed with the server.
 2.	**What are strengths and weaknesses of the direct communication between the sensor and actuator? What are strengths and weaknesses of the event hub? Which do you feel is better for this application?**
 
+The strength of direct communication is that data is exchanged only when necessary.  An actuator might only request data from the sensor at some interval and that's the only data sent over the network, while with an event hub, now the sensor is pushing data into the hub whether the actuator needs it now or not which increases network traffic.  The weakness of direct communication is that it's not manageable at scale.  Once you work with 3 or more devices, it becomes cumbersome to refactor code to account for communication between all the devices.  
 3.	**What was the biggest challenge you overcame in this lab?**
 
+The biggest challenge I had was choosing how to organize my topics.  Once I got the hang of MQTT concepts, my mind started thinking about how I could dynamically set config on the devices in something like a `/[devID]/config` topic which could change values of any global variables, like the distance thresholds for changing the stoplight color, for example.  I also have an elasticsearch cluster running at home that monitors my public websites and services, so I was excited to setup `/log/[info|debug|warning|error]` topics that I could have some other subscriber process send to my ELK cluster to gain better visibility on my devices and get alerted when they fail.  I think about 6-7 hours of my total time was spent testing how to make all of that happen, none of which made it into my codebase because I saw that it would take far longer to set all that up than I wanted to spend for this project.  But I am excited to implement those concepts for my personal projects.
 4.	**Please estimate the total time you spent on this lab and report.**
+
 Coding and wiring took me about 8-10 hours. This report took me about 3 hours.
 
 ## Certification of Work
