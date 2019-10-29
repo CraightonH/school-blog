@@ -67,21 +67,172 @@ PubSubClient client([IP of mosquitto server], 1883, wifiClient);
 ```
 Now you can use the `client` object to interact with the MQTT server.
 
-#### 
-### Design the Circuit
-Assuming the Wemos D1 has male headers soldered into its pin slots, plug it into the breadboard.  Then use wires to connect the micro controller to the ultrasonic speaker as depicted in the following diagram:
+### Implement Stoplight Logic
+Now that we're using the MQTT server to drive our devices instead of web servers, we need to put logic into the stoplight so it can choose which light turns on and when.  Our logic operates as follows:
+1. Only update the light if the garage door is open, otherwise turn the light off.
+2. Change the light color based on the same criteria as the previous projects.
+With those criteria, our main logic can be broken down into the following function:
+```
+void handleDistance(int distance) {
+  if (DOOR_OPEN) {
+    if (distance <= 10) {
+      if (!FLASH) {
+        startTimer();
+      }
+      FLASH = true;
+    }
+    if (distance > 10 && distance <= 20) {
+      redOn();
+    }
+    if (distance > 20 && distance <= 30) {
+      yellowOn();  
+    }
+    if (distance > 30 && distance <=50) {
+      greenOn();
+    }
+    if (distance > 50) {
+      off();
+    }
+  } else {
+    off();
+  }
+}
+```
 
-![Breadboard Wiring](https://github.com/CraightonH/school-blog/blob/master/RangeFinderDiagram.png?raw=true)
+#### Setup MQTT topic listeners
+But how do we get the variables `distance` and `DOOR_OPEN`?  We get them by listening to different topics.
+```
+const char* parkDistanceAllTopic = "/garage/park/distance/#";
+const char* parkDistanceTopic = "/garage/park/distance";
+const char* parkDistancePTopic = "/garage/park/distance/p";
+const char* garageDoorAllTopic = "/garage/door/#";
+const char* garageDoorTopic = "/garage/door";
+const char* garageDoorPTopic = "/garage/door/p";
+const char* stoplightStatusTopic = "/garage/stoplight/status";
+const char* stoplightStatusPTopic = "/garage/stoplight/status/p";
+const char* stoplightActionTopic = "/garage/stoplight/action";
+```
+Notice that in all cases, there is an extra topic the a `/p` appended to it.  This allows us to "p"eriodically send the state of the device.  In case the stoplight microcontroller ever resets, it can be updated to the correct state within time period "p".
+With the above topics defined, we can listen to certain ones with the following:
+```
+client.subscribe(stoplightActionTopic);
+client.subscribe(parkDistanceAllTopic);
+client.subscribe(garageDoorAllTopic);
+```
+NOTE: `stoplightActionTopic` isn't necessary, but it is useful for testing the stoplight's functionality without all of the other required data in the logic.
+
+Finally, we need a callback function that gets called when a message is received:
+```
+char message_buff[100];
+void callback(char* topic, byte* payload, unsigned int length) {
+  int i = 0;
+  for(i = 0; i < length; i++) {
+    message_buff[i] = payload[i];
+  }
+  message_buff[i] = '\0';
+  String message = String(message_buff);
+  String strTopic = String(topic);
+  if (strTopic == parkDistanceTopic || strTopic == parkDistancePTopic) {
+    handleDistance(message.toInt());
+  } else if (strTopic == garageDoorTopic || strTopic == garageDoorPTopic) {
+    updateGarageDoor(message); # sets DOOR_OPEN
+  } else if (strTopic == stoplightActionTopic) { # used for testing without extra data
+    if (message == "red") {
+      redOn();  
+    } else if (message == "yellow") {
+      yellowOn();  
+    } else if (message == "green") {
+      greenOn();  
+    } else if (message == "off") {
+      off();
+    } else if (message == "cycle") {
+      cycle();
+    }
+  }
+}
+```
+With these basic building blocks in place, your stoplight can now respond to updates on the MQTT server.
+
+### Setup Range Finder
+The range finder is much simpler since all the logic is in the stoplight.  This device simply reads data from the sensor and sends it into the MQTT topic.  The logic for calculating the distance remains the same as the last project.  What remains is simply publishing the data to the topic:
+```
+void pubDistance(String distance) {
+  if (millis() > timer + 1000) {
+    timer = millis();
+    client.publish(parkDistanceTopic, distance.c_str());
+  }
+}
+
+void loop(void) {
+  long duration, distance;
+  digitalWrite(TRIGPIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIGPIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIGPIN, LOW);
+  duration = pulseIn(ECHOPIN, HIGH);
+  distance = (duration/2) * SPEED_OF_SOUND;
+  pubDistance(String(distance));
+}
+```
+Notice that we use a timer to prevent constantly publishing the data.  Every second, data will be published into the `parkDistanceTopic`.
+
+### Setup Door Sensor
+This is the simplest sensor of all to setup and it's the new addition to this project.  In a nutshell:
+1. Send the door state periodically.
+2. Send the door state when it changes.
+```
+void pubDoorStatePeriodic(bool doorClosed) {
+  if (millis() > timer + 5000) {
+    timer = millis();
+    pubDoorState(doorPTopic, doorClosed);
+  }
+}
+
+void pubDoorState(const char* topic, bool doorClosed) {
+    String door = "open";
+    if (!doorClosed) {
+      door = "closed";  
+    }
+    client.publish(topic, door.c_str());
+}
+
+void loop(void) {
+  if (digitalRead(SWITCHPIN) == LOW) {
+    doorClosed = false;
+  } else {
+    doorClosed = true;  
+  }
+  if (prevDoorClosed != doorClosed) {
+    prevDoorClosed = doorClosed;
+    pubDoorState(doorTopic, doorClosed);  
+  }
+  pubDoorStatePeriodic(doorClosed);
+}
+```
+When the sensor is low, the door is open.  When the sensor is high, the door is closed.
+With all this data now being sent to the MQTT server, the stoplight works completely autonomously.
+
+### Design the Circuits
+#### Stoplight
+The circuit for the stoplight doesn't change.  Refer to the documentation on setting it up [here](https://craightonh.github.io/school-blog/mcstoplight).
+
+#### Range Finder
+Like the stoplight, this circuit doesn't change.  Refer to its documentation [here](https://craightonh.github.io/school-blog/rangefinder).
+
+#### Door Sensor
+This circuit is extremely simple.  Wire it according to the following diagram:
+
 
 ## Thought Questions
-1.	**Think of the interaction between your devices. How well would this scale to multiple devices? Is it easy to add another sensor? Another actuator?**
-This would not scale well at all.  While this project didn't include an API for the range finder, I would likely build one if I were to set this up at home.  The API could then allow remote control of the different distances without having to reflash the device.  Adding a 3rd device, with it's own API, could mean that all other devices need to be updated to see it's API to allow for interaction with it.  It is not practical to maintain an API for each device and update each device when another is added to the system.
-2.	**What are strengths and weaknesses of the tennis-ball-on-a-string system that Don had originally? What are strengths and weaknesses of the IoT system that he developed? What enhancements would you suggest?** 
-The strength of the tennis ball is that it's 1) cheap, 2) effective, and 3) requires very little to no maintenance.  The strength of the IoT system is that it's 1) cheap, 2) effective, and 3) easily configurable (assuming an API that allows for changing distance configurations).  It's weakness is that if Don invents a new interaction with this existing system, he has to update all devices to account for this new interaction.  Additionally, these cheap IoT devices are more likely to break than a tennis ball which makes this parking system fragile - only one of the 4 devices needs to break and you no longer have a parking system.  
+1.	**How does the communication between devices change with the shift to using an event hub? How does this facilitate greater scalability? What things did you do to learn to use MQTT?**
+
+2.	**What are strengths and weaknesses of the direct communication between the sensor and actuator? What are strengths and weaknesses of the event hub? Which do you feel is better for this application?**
+
 3.	**What was the biggest challenge you overcame in this lab?**
-I had 1 major challenge during the lab which was my microcontroller kept throwing errors and failing.  At first I suspected my code was written poorly, but after about 2 hours, I determined that it was insufficient power to the microcontroller.  Sure enough, once I plugged the microcontroller into a wall outlet instead of a USB port on my computer, everything worked like a charm.
-5.	**Please estimate the total time you spent on this lab and report.**
-Coding and wiring took me about 4-5 hours. This report took me about 1.5 hours.
+
+4.	**Please estimate the total time you spent on this lab and report.**
+Coding and wiring took me about 8-10 hours. This report took me about 3 hours.
 
 ## Certification of Work
 I certify that the solution presented in this lab represents my own work.
@@ -89,5 +240,9 @@ I certify that the solution presented in this lab represents my own work.
 Craighton Hancock
 
 ## Appendix
-### Appendix A - Code
-All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-range-finder).
+### Appendix A - Stoplight Code
+All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-mqtt-stoplight).
+### Appendix B - Range Finder Code
+All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-mqtt-range-finder).
+### Appendix B - Door Sensor Code
+All of the code for this project can be found at my [GitHub repo](https://github.com/CraightonH/wemos-mqtt-door-sensor).
