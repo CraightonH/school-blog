@@ -20,6 +20,11 @@ The materials used in this lab were:
 * [Home Assistant MQTT Discovery Docs](https://www.home-assistant.io/docs/mqtt/discovery/) - This documents how to create home assistant entities for MQTT topics.
 
 ## Procedures
+The following diagram shows a high level overview of what we are trying to achieve:
+![HASS System Diagram](https://www.lucidchart.com/publicSegments/view/69190d3d-8310-4424-b62a-e69e10621620/image.png)
+
+We'll install an MQTT broker and Home Assistant on the raspberry pi and integrate Home Assistant with IFTTT to connect to almost any external service we choose.
+
 ### Install Home Assistant
 Follow the [Home Assistant Installation Instructions](https://www.home-assistant.io/getting-started/) document.
 If you intend to use WiFi with your raspberry pi:
