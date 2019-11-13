@@ -129,7 +129,7 @@ I'll include a single automation because the sky's the limit here.  We'll integr
 
 ```
 ifttt:
-    key: dxghCzm1si8CFz09ATLBE7
+    key: [YOUR_KEY]
 ```
 
 5. Click the floppy disk icon
