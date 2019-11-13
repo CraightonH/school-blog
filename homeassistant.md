@@ -148,18 +148,19 @@ If your email included additional values, simply add them as `key: value` pairs 
 With these basics, you can setup any number of automations with IFTTT.
 
 ## Thought Questions
-1.	**How does the communication between devices change with the shift to using an event hub? How does this facilitate greater scalability? What things did you do to learn to use MQTT?**
+1.	**Which version of Home Assistant did you choose to install?  (Docker-based Hass.io, Raspbian-based Hassbian, or install it yourself?) Why did you choose this particular version?**
 
-Using an event hub greatly increases the scalability of this system because you don't have to create a web API on each device and code each device to know IP addresses of all other devices and the endpoints each device exposes.  Instead, all the devices can subscribe to topics on the event hub and any future device can interact with the actuator by simply sending data that the actuator would expect in that topic.  I got my feet wet with MQTT by installing it on my laptop and using the `mosquitto_pub` and `mosquitto_sub` utilities that are installed with the server.
-2.	**What are strengths and weaknesses of the direct communication between the sensor and actuator? What are strengths and weaknesses of the event hub? Which do you feel is better for this application?**
+I installed Hass.io on my raspberry pi because the pi is easily portable and could travel between home and class.  I thought it would be convenient to not have it installed on my laptop and I wasn't quite ready to host it on the internet at home.  When I am ready to host it online, I think I'll install it myself so I can choose whichever underlying OS I want.
 
-The strength of direct communication is that data is exchanged only when necessary.  An actuator might only request data from the sensor at some interval and that's the only data sent over the network, while with an event hub, now the sensor is pushing data into the hub whether the actuator needs it now or not which increases network traffic.  The weakness of direct communication is that it's not manageable at scale.  Once you work with 3 or more devices, it becomes cumbersome to refactor code to account for communication between all the devices.  
-3.	**What was the biggest challenge you overcame in this lab?**
+2.	**How should you decide which logic to perform in Home Assistant versus coding the logic directly into the devices? What guiding principles would you establish for future devices?**
 
-The biggest challenge I had was choosing how to organize my topics.  Once I got the hang of MQTT concepts, my mind started thinking about how I could dynamically set config on the devices in something like a `/[devID]/config` topic which could change values of any global variables, like the distance thresholds for changing the stoplight color, for example.  I also have an elasticsearch cluster running at home that monitors my public websites and services, so I was excited to setup `/log/[info|debug|warning|error]` topics that I could have some other subscriber process send to my ELK cluster to gain better visibility on my devices and get alerted when they fail.  I think about 6-7 hours of my total time was spent testing how to make all of that happen, none of which made it into my codebase because I saw that it would take far longer to set all that up than I wanted to spend for this project.  But I am excited to implement those concepts for my personal projects.
+The logic of these devices should be as abstracted as possible, meaning that the devices should not choose to perform certain actions besides subscribing and listening to MQTT topics.  Ideally, each device listens for actions it should take in some topic meant to drive the device.  Whenever a device performs an action, it should publish that action back to the MQTT server so Home Assistant has the ability to make decisions based on that action.
+3.	**What features do you like the most about Home Assistant?**
+
+I like how simple it is to install and configure modules.  I'm also very impressed with its rich automation possibilites like detecting how long a state has been changed or additional conditions that can include data from other sensors.
 4.	**Please estimate the total time you spent on this lab and report.**
 
-Coding and wiring took me about 8-10 hours. This report took me about 3 hours.
+Building the server and learning how to configure it took 6-8 hours and writing the report took 2-3 hours.
 
 ## Certification of Work
 I certify that the solution presented in this lab represents my own work.
