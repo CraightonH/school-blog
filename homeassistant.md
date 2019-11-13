@@ -66,157 +66,17 @@ method=auto
 4. Click the Install button.
 5. While it installs, review the instructions on how to configure it.
 6. Once installed, the bottom of the page will show the MQTT server's config file.  For now, turn SSL settings to false and anonymous logins to false.
+7. Click on Configuration in the Sidebar and then Users.  Then click the plus icon and create a new user to be used for authentication from the microcontrollers.  To increase security, create different users for each device.
 
-### Implement Stoplight Logic
-The following is a state diagram of the logic that needs to be performed:
-![State Diagram](https://www.lucidchart.com/publicSegments/view/d6d9ff62-378e-42ae-a006-b06407a8869c/image.png)
-
-Now that we're using the MQTT server to drive our devices instead of web servers, we need to put logic into the stoplight so it can choose which light turns on and when.  Our logic operates as follows:
-1. Only update the light if the garage door is open, otherwise turn the light off.
-2. Change the light color based on the same criteria as the previous projects.
-
-With those criteria, our main logic can be broken down into the following function:
-```
-void handleDistance(int distance) {
-  if (DOOR_OPEN) {
-    if (distance <= 10) {
-      if (!FLASH) {
-        startTimer();
-      }
-      FLASH = true;
-    }
-    if (distance > 10 && distance <= 20) {
-      redOn();
-    }
-    if (distance > 20 && distance <= 30) {
-      yellowOn();  
-    }
-    if (distance > 30 && distance <=50) {
-      greenOn();
-    }
-    if (distance > 50) {
-      off();
-    }
-  } else {
-    off();
-  }
-}
-```
-
-#### Setup MQTT topic listeners
-But how do we get the variables `distance` and `DOOR_OPEN`?  We get them by listening to different topics.
-```
-const char* parkDistanceAllTopic = "/garage/park/distance/#";
-const char* parkDistanceTopic = "/garage/park/distance";
-const char* parkDistancePTopic = "/garage/park/distance/p";
-const char* garageDoorAllTopic = "/garage/door/#";
-const char* garageDoorTopic = "/garage/door";
-const char* garageDoorPTopic = "/garage/door/p";
-const char* stoplightStatusTopic = "/garage/stoplight/status";
-const char* stoplightStatusPTopic = "/garage/stoplight/status/p";
-const char* stoplightActionTopic = "/garage/stoplight/action";
-```
-Notice that in all cases, there is an extra topic the a `/p` appended to it.  This allows us to "p"eriodically send the state of the device.  In case the stoplight microcontroller ever resets, it can be updated to the correct state within time period "p".
-With the above topics defined, we can listen to certain ones with the following:
-```
-client.subscribe(stoplightActionTopic);
-client.subscribe(parkDistanceAllTopic);
-client.subscribe(garageDoorAllTopic);
-```
-NOTE: `stoplightActionTopic` isn't necessary, but it is useful for testing the stoplight's functionality without all of the other required data in the logic.
-
-Finally, we need a callback function that gets called when a message is received:
-```
-char message_buff[100];
-void callback(char* topic, byte* payload, unsigned int length) {
-  int i = 0;
-  for(i = 0; i < length; i++) {
-    message_buff[i] = payload[i];
-  }
-  message_buff[i] = '\0';
-  String message = String(message_buff);
-  String strTopic = String(topic);
-  if (strTopic == parkDistanceTopic || strTopic == parkDistancePTopic) {
-    handleDistance(message.toInt());
-  } else if (strTopic == garageDoorTopic || strTopic == garageDoorPTopic) {
-    updateGarageDoor(message); # sets DOOR_OPEN
-  } else if (strTopic == stoplightActionTopic) { # used for testing without extra data
-    if (message == "red") {
-      redOn();  
-    } else if (message == "yellow") {
-      yellowOn();  
-    } else if (message == "green") {
-      greenOn();  
-    } else if (message == "off") {
-      off();
-    } else if (message == "cycle") {
-      cycle();
-    }
-  }
-}
-```
-With these basic building blocks in place, your stoplight can now respond to updates on the MQTT server.
-
-### Setup Range Finder
-The range finder is much simpler since all the logic is in the stoplight.  This device simply reads data from the sensor and sends it into the MQTT topic.  The logic for calculating the distance remains the same as the last project.  What remains is simply publishing the data to the topic:
-```
-void pubDistance(String distance) {
-  if (millis() > timer + 1000) {
-    timer = millis();
-    client.publish(parkDistanceTopic, distance.c_str());
-  }
-}
-
-void loop(void) {
-  long duration, distance;
-  digitalWrite(TRIGPIN, LOW);
-  delayMicroseconds(2);
-  digitalWrite(TRIGPIN, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIGPIN, LOW);
-  duration = pulseIn(ECHOPIN, HIGH);
-  distance = (duration/2) * SPEED_OF_SOUND;
-  pubDistance(String(distance));
-}
-```
-Notice that we use a timer to prevent constantly publishing the data.  Every second, data will be published into the `parkDistanceTopic`.
-
-### Setup Door Sensor
-This is the simplest sensor of all to setup and it's the new addition to this project.  In a nutshell:
-1. Send the door state periodically.
-2. Send the door state when it changes.
+### Connect Microcontrollers
+In each device, only 2 changes need to be made:
+1. Change the IP address of the MQTT server to be the same IP as the Home Assitant server.
+2. Add the username and password for your device to the connection:
 
 ```
-void pubDoorStatePeriodic(bool doorClosed) {
-  if (millis() > timer + 5000) {
-    timer = millis();
-    pubDoorState(doorPTopic, doorClosed);
-  }
-}
-
-void pubDoorState(const char* topic, bool doorClosed) {
-    String door = "open";
-    if (!doorClosed) {
-      door = "closed";  
-    }
-    client.publish(topic, door.c_str());
-}
-
-void loop(void) {
-  if (digitalRead(SWITCHPIN) == LOW) {
-    doorClosed = false;
-  } else {
-    doorClosed = true;  
-  }
-  if (prevDoorClosed != doorClosed) {
-    prevDoorClosed = doorClosed;
-    pubDoorState(doorTopic, doorClosed);  
-  }
-  pubDoorStatePeriodic(doorClosed);
-}
+client.connect((char*) devID.c_str(), "[user]", "[password]")
 ```
-When the sensor is low, the door is open.  When the sensor is high, the door is closed.
-With all this data now being sent to the MQTT server, the stoplight works completely autonomously.
+where `[user]` is the username and `[password]` is the password created in the last step of the previous section.
 
 ### Design the Circuits
 #### Stoplight
