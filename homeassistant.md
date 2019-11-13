@@ -131,8 +131,7 @@ I'll include a single automation because the sky's the limit here.  We'll integr
 ifttt:
     key: [YOUR_KEY]
 ```
-
-5. Click the floppy disk icon
+Click the floppy disk icon to save the file.
 
 #### Add Automation
 1. Click on Configuration > Automations
