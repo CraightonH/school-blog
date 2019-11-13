@@ -27,6 +27,7 @@ If you intend to use WiFi with your raspberry pi:
 2. Create a folder named `network` in the `CONFIG` folder
 3. Create a file named `my-network` in the `network` folder
 4. Copy the following template into the `my-network` file and change `MY_SSID` and `MY_WLAN_SECURITY_KEY`:
+
 ```
 [connection]
 id=my-network
@@ -51,6 +52,7 @@ method=auto
 addr-gen-mode=stable-privacy
 method=auto
 ```
+
 5. Install the SD card into the pi and turn it on
 6. Login with `root` (no password)
 7. Type `login`
