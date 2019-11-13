@@ -100,8 +100,53 @@ Now that entities are created, we can visualize their data!
 
 Now you should see sensors that are displaying data from your microcontrollers.
 
-### Add Automations
+### Build Automations
+I'll include a single automation because the sky's the limit here.  We'll integrate our home assistant with IFTTT, a well known connection platform.  To do this, we'll need another tool so we can edit files on Home Assistant.
 
+#### Add Configurator
+1. Click on Hass.io in the sidebar
+2. Click on "Add-on Store"
+3. Search in the official store for "Configurator"
+4. Once installed, click the toggle for "Show in sidebar"
+
+#### Setup IFTTT
+1. Create IFTTT account if not already done
+2. Navigate to [Webhooks](https://ifttt.com/maker_webhooks)
+3. Click the Connect button
+4. Navigate to [Webhook Settings](https://ifttt.com/maker_webhooks/settings)
+5. Note the value after the last `/` (that's your IFTTT webhook key)
+6. Click the Explore button and then click "Create your own applet"
+7. Click the This icon and search for Webhooks
+8. Follow the wizard and create an event named "car_parked"
+9. Click That and search for email
+10. Type the subject and body that you would like emailed to you when the "car_parked" event is called 
+
+#### Add IFTTT Config
+1. Navigate back to Home Assistant and click on Configurator in the sidebar
+2. Click on the folder icon in the top left corner
+3. Click on configuration.yaml
+4.  Add the following to the bottom of the file
+
+```
+ifttt:
+    key: dxghCzm1si8CFz09ATLBE7
+```
+
+5. Click the floppy disk icon
+
+#### Add Automation
+1. Click on Configuration > Automations
+2. Title the Automation "Car Parked"
+3. Add a State trigger tied to the stoplight entity you created where From=* and To=red and For=00:00:20 (20 seconds)
+4. Add a Call Service action that calls ifttt.trigger with the following data:
+
+```
+event: car_parked
+```
+If your email included additional values, simply add them as `key: value` pairs on their own lines.
+5. Test out your new automation by causing your stoplight to enter any state other than red and then the red state for at least 20 seconds.  IFTTT takes several minutes to send the email, so be patient.
+
+With these basics, you can setup any number of automations with IFTTT.
 
 ## Thought Questions
 1.	**How does the communication between devices change with the shift to using an event hub? How does this facilitate greater scalability? What things did you do to learn to use MQTT?**
