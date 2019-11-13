@@ -62,7 +62,7 @@ method=auto
 ### Install MQTT Server
 1. Once logged in, open the sidebar and click on Hass.io.
 2. Click on "Add-on Store"
-3. Search in the official store for "MQTT Broker"
+3. Search in the official store for "Mosquitto Broker"
 4. Click the Install button.
 5. While it installs, review the instructions on how to configure it.
 6. Once installed, the bottom of the page will show the MQTT server's config file.  For now, turn SSL settings to false and anonymous logins to false.
@@ -76,7 +76,18 @@ In each device, only 2 changes need to be made:
 ```
 client.connect((char*) devID.c_str(), "[user]", "[password]")
 ```
-where `[user]` is the username and `[password]` is the password created in the last step of the previous section.
+where `[user]` is the username and `[password]` is the password created in the last step of the previous section.  Once the microcontrollers are turned on, they should begin to communicate with the MQTT broker on the Home Assistant.  
+
+### Create Home Assistant Entities
+To see the data produced by your devices, you first need to create entities for them.  The [Home Assistant Documentation](https://www.home-assistant.io/docs/mqtt/discovery/) is helpful for understanding how to set up the entities.  They provide examples of how to setup entities manually, but all that is necessary is to publish a message to a specific MQTT topic with the details of the device.  Your microcontroller can setup its own entity!
+
+Because our microcontrollers have a function for reconnecting to the MQTT server which runs on startup and at any point if the connection is lost, we can add commands in this function to also setup the entity.  Add the following function to your microcontrollers and call this function in the reconnect function, replacing `[Text]` with values that make sense for the specific microcontroller:
+
+```
+void sendHassDeviceConfig() {
+  client.publish("homeassistant/sensor/garage/[Type]/config", "{\"name\": \"[Name]\", \"state_topic\": \"/[Topic]\"}");
+}
+```
 
 ### Design the Circuits
 #### Stoplight
