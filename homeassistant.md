@@ -89,19 +89,18 @@ void sendHassDeviceConfig() {
 }
 ```
 
-### Design the Circuits
-#### Stoplight
-The circuit for the stoplight doesn't change.  Refer to the documentation on setting it up [here](https://craightonh.github.io/school-blog/mcstoplight).
+### Add Sensors to Dashboard
+Now that entities are created, we can visualize their data!
+1. Click on Overview in the sidebar
+2. Click on the Context menu on the top right of the page and then click Configure UI
+4. Click the Plus button
+5. Click Sensor and open the Entity dropdown
+6. Click on one of the microcontroller entities and click Save
+7. Repeat steps 4-6 for the other 2 microcontrollers
 
-#### Range Finder
-Like the stoplight, this circuit doesn't change.  Refer to its documentation [here](https://craightonh.github.io/school-blog/rangefinder).
+Now you should see sensors that are displaying data from your microcontrollers.
 
-#### Door Sensor
-This circuit is extremely simple.  Wire it according to the following diagram:
-
-![Breadboard Wiring](https://github.com/CraightonH/school-blog/blob/master/MagneticSensorDiagram.png?raw=true)
-
-Note, the magnetic sensor is a simple device with two wires.  It doesn't matter which wire is put into ground or not.  The diagram may look confusing because there is no device and that's because I was unable to find the sensor in Fritzing.  Suffice it to say, you only need to put one of the wires in ground and one in another pin that can be read.
+### Add Automations
 
 
 ## Thought Questions
