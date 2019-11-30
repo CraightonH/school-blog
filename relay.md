@@ -185,7 +185,7 @@ The hardest part was figuring out how to wire the relay.  Wiring 5V and ground s
 
 4.	**Please estimate the total time you spent on this lab and report.**
 
-Building the server and learning how to configure it took 2 hours and writing the report took 2 hours.
+Wiring and coding took 2 hours and writing the report took 2 hours.
 
 ## Certification of Work
 I certify that the solution presented in this lab represents my own work.
