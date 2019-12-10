@@ -93,7 +93,7 @@ sensor:
 Just like that you should have a sensor object that represents the data found in those topics.
 
 ### Setup Socket
-I thought a lot about using the relay to control the humdifier directly, but that meant damaging the humidifer to splice the relay into it.  I then thought about making my own power outlet (there are many tutorials out there to do this), but then thought for the time and money it would take to build, I may as well just buy a smart socket for ~$8.  
+I thought a lot about using the relay to control the humdifier directly, but that meant damaging the humidifer to splice the relay into it.  I then thought about making my own smart power outlet (there are many tutorials out there to do this), but then thought for the time and money it would take to build, I may as well just buy a smart socket for ~$8.  
 
 I chose one that integrates with IFTTT so that I could leverage Home Assistant's automations.  Follow the instructions provided by the manufacturer on how to setup IFTTT integrations with the socket.  Then create the following relationships in IFTTT:
 1. Login to IFTTT
