@@ -107,7 +107,7 @@ I chose one that integrates with IFTTT so that I could leverage Home Assistant's
 Now IFTTT can turn the socket on and off.
 
 ### Setup Home Assistant Automation
-With IFTTT controlling the socket and our humidity sensor pushing data to `home/bedroom/hum`, we can create an automation in home assistant to fire that ifttt webhook when the humidity drops to less than 47%.
+With IFTTT controlling the socket and our humidity sensor pushing data to `home/bedroom/hum`, we can create an automation in home assistant to fire that IFTTT webhook when the humidity drops to less than 47%.
 
 1. Create new Automation
 2. Trigger = Numeric State of sensor.bedroom_humidity below 47% (alternatively, read the MQTT topic)
