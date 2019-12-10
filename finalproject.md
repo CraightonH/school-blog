@@ -11,8 +11,6 @@ The materials used in this lab were:
 * 1x Wemos D1 mini microcontroller
 * 1x Wemos D1 mini DHT22 shield
 * 1x WiFi socket (sell for < $10)
-* 1x breadboard
-* 3x wires
 * Raspberry Pi (with home assistant installed)
 
 ## References
