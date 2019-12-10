@@ -31,10 +31,13 @@ The libraries necessary are from adafruit: Adafruit Unified Sensor and DHTSensor
 2. Search for Adafruit Unified Sensor and install the latest version
 3. Search for DHTSensor and install the latest version
 4. Include the DHT library in your sketch (it depends on the unified sensor but you don't need to include the library)
+
 ```
 #include "DHT.h"
 ```
+
 5. Setup the library:
+
 ```
 #define DHTPIN 2     // Digital pin connected to the DHT sensor
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
@@ -45,7 +48,9 @@ void setup(void) {
     dht.begin();  // start sensor
 }
 ```
+
 6. Get the data:
+
 ```
 void loop(void) {
   float humidity = dht.readHumidity(); // get the humidity as a percentage
@@ -68,6 +73,7 @@ To visualize the data collected by the sensor, we need a sensor object to repres
 2. Once installed, click on Configurator in the sidebar and click the folder icon in the top left side of the menu
 3. Click on the configuration.yaml file
 4. Add a block at the end of the file that looks like the following:
+
 ```
 sensor:
   - platform: mqtt
@@ -81,6 +87,7 @@ sensor:
     unit_of_measurement: '%'
     device_class: "humidity"
 ```
+
 5. Restart the Home Assistant server via Configuration > System Controls > Restart (Note: this doesn't restart the host system, just the Home Assistant service)
 
 Just like that you should have a sensor object that represents the data found in those topics.
